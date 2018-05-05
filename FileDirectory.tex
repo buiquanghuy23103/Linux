@@ -1,0 +1,31 @@
+\chapter{Files and Directories}
+
+\begin{table}[hbtp]
+\centering\caption{File and Directory commands}
+\begin{tabular}{ll p{10cm} }
+\toprule
+\head{Activity} & \head{Command} & \head{Explain} \\
+\midrule
+
+Copy a file & \verb|cp file1 file2| & Copy \verb|file1| to a desire location and change name to \verb|file2| \\
+
+Copy multiple files & \verb|cp file1 file2 file3 dir| & Copy \verb|file1|, \verb|file2|, and \verb|file3| to directory \verb|dir|. Note that the last argument must be a directory. \\
+
+Move a file & \verb|mv file1 file2| & If \verb|file2| resides in a different directory than \verb|file1|, then \verb|file1| is moved to the new location \\
+
+Rename a file & \verb|mv file1 file2| & If \verb|file2| and \verb|file1| are in the same directory, then \verb|file1| is renamed as \verb|file2| \\
+
+Move multiple files & \verb|mv file1 file2 file3 dir| & Move \verb|file1|, \verb|file2|, and \verb|file3| to directory \verb|dir|\\
+
+Create directory & \verb|mkdir dir| & Create directory \verb|dir| under the current directory\\
+
+Create directory path & \verb|mkdir -p ~/dir1/dir2/dir3| & Create \verb|dir1|,\verb|dir2|, and \verb|dir3| to match the specified directory structure \verb|~/dir1/dir2/dir3| \\
+
+Copy directories & \verb|cp -r dir1 dir2 dir3 dir4| & Recursively copy \verb|dir1|,\verb|dir2|, and \verb|dir3| to \verb|dir4| \\
+
+Move directories & \verb|mv dir1 dir2 dir3 dir4| & Move \verb|dir1|,\verb|dir2|, and \verb|dir3| to \verb|dir4| \\
+
+Remove directories & \verb|rm -rf dir1 dir2 dir3| & Remove (without questioning) \verb|dir1|,\verb|dir2|, and \verb|dir3| \\
+\bottomrule
+\end{tabular}
+\end{table}

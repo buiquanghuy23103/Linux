@@ -1,0 +1,67 @@
+\chapter{The Shell}
+
+\section{Shortcuts}
+
+\begin{table}[hbtp]
+\centering \caption{Shell shortcuts}
+\begin{tabular}{l p{10cm} }
+\toprule
+\head{Shortcuts} & \head{Explanation} \\
+\midrule
+Ctrl + Alt + F1 -- 6 & Start or switch to the first (to sixth) session \\
+Ctrl + Alt + F7 & Switch to GUI session \\
+Ctrl + A & Jump to the beginning of the line \\
+Ctrl + E & Jump to the end of the line \\
+Ctrl + U & Clear from the cursor to the beginning of the line \\
+Ctrl + K & Clear from the cursor to the end of the line \\
+!string & Re-execute a recent command by matching the command name \\
+!65 & Re-execute a 65th command in the history list \\
+Ctrl + R & Search the history list of commands for a pattern \\
+Esc + . & Copy the last argument of the previous command to the current one \\
+Ctrl + C & Stop the running command \\
+Ctrl + Z & Suspend the running command \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Configuration files}
+
+Shell configuration files are scripts that execute when a shell starts. There are two types of shells:
+
+\begin{itemize}
+\item Login shell: run when the system starts and is using only the CLI as the user interface.
+\item Non-login shell run when a shell session is opened from within the GUI. 
+\end{itemize}
+
+Login shells execute only one of the following configuration files in order (means that if a file is found, all files followed it are abandoned):
+
+\begin{enumerate}
+\item \verb|/etc/profile|
+\item \verb|~/.bash_profile|
+\item \verb|~/.bash_login|
+\item \verb|~/.profile|
+\end{enumerate}
+
+\begin{table}[hbtp]
+\centering
+\begin{tabular}{l l p{10cm} }
+\toprule
+\head{File} & \head{Type} & \head{Explanation} \\
+\midrule
+\verb|/etc/profile.d/| & login & Configurations in this directory are applied for all users. Do not modify the system's files, instead create your own file (for example: \verb|MyConf.sh|) and add custom configurations  to it.\\
+
+\verb|~/.bash_profile| & login & Contains shell preferences for individual user. \\
+
+\verb|~/.profile| & login & Contains environment variables for individual users. \\
+
+\verb|~./bash_login| & login & Store commands executed when a user logs in. \\
+
+\verb|~./bash_logout| & login & Store commands executed when a user logs out. \\
+
+\verb|/etc/bashrc| & non-login & Contain shell preferences for all users. \\
+
+\verb|~/.bashrc| & non-login & Pass variables between shells. \\
+
+\bottomrule
+\end{tabular}
+\end{table}
