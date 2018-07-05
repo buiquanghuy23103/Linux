@@ -1,0 +1,73 @@
+\chapter{Text files}
+
+\section{Redirecting output}
+
+\tableStart[\caption{Channels (File descriptor)}] { |p{2\xm}|p{3\xm}|p{3\xm}|p{2\xm}|p{3\xm}| }
+\head{Number} & \head{Channel} & \head{Description} & \head{Default connection} & \head{Usage}\w
+0 & \verb|stdin| & Standard input & keyboard & read only\w
+1 & \verb|stdout| & Standard output & terminal & write only\w
+2 & \verb|stderr| & Standard error & terminal & write only\w
+3+ & \verb|filename| & Other files & none & read and/or write only\w
+\tableEnd
+
+\tableStart[\caption{Output redirection operators}] {|l|l|}
+\head{Usage} & \head{Explanation}\w
+\verb|>file| & redirect \verb|stdout| to overwrite the file\w
+\verb|>>file| & redirect \verb|stdout| to append to the file\w
+\verb|2>file| & redirect \verb|stderr| to append to the file\w
+\verb|2>/dev/null| & discard error messages by redirecting to \verb|/dev/null|\w
+\verb|&>file| & redirect \verb|stdout| and \verb|stderr| to overwrite the same file\w
+\verb|&>>file| & redirect \verb|stdout| and \verb|stderr| to append to the same file\w
+\tableEnd
+
+The order of redirection is important. The sequence \verb|> file 2>&1| redirects redirect \verb|stdout| to a file (\verb|>file|), then redirect \verb|stderr| (\verb|2>|) to the same place that \verb|stdout| is directed to (\verb|&1|, 1 is the number of \verb|stdout|). However, the sequence \verb|2>&1 > file| redirects \verb|stderr| (\verb|2>|) to the place of \verb|stdout| (\verb|&1|), meaning the terminal window. It then redirects only the \verb|stdout| to a file.
+
+\begin{itemize}
+\item Standard error can be redirected through a pipe, but the merging operator such as \code{&>} or \code{&>>} cannot be used. The following command is the correct way to redirect both \verb|stdout| and \verb|stderr| through a pipe.
+\begin{commandshell}
+find /etc -name passwd 2>&1 | less
+\end{commandshell}
+
+\item The \code{tee} command redirects \verb|stdout| to the terminal window, and at the same time, passes it to some other program through a pipe. The following command prints the output of \code{ls -l} command on the terminal window as well as redirects \verb|stdout| to a file.
+\begin{commandshell}
+ls -l | tee /tmp/output
+\end{commandshell}
+
+\item In the following example,  \verb|/dev/pts/0| is the device file of that represents the current terminal window. The command prints the \verb|stdout| of \code{ls -l} command on the terminal window as well as sends it to a specified email.
+\begin{commandshell}
+ls -l | tee /dev/pts/0 | mail huy.bui@edu.xamk.fi
+\end{commandshell}
+
+\item Save the output to a file and discard error messages
+\begin{commandshell}
+find /etc -name passwd > /tmp/output 2> /dev/null
+\end{commandshell}
+
+\item Store output and error messages to the same file
+\begin{commandshell}
+find /etc -name passwd &> /tmp/output-errors
+\end{commandshell}
+
+\item Append output and error messages to an existing file
+\begin{commandshell}
+find /etc -name passwd >> /tmp/output-errors 2>&1
+\end{commandshell}
+
+\item Copy 10 lines from a log file and append them to another file
+\begin{commandshell}
+tail -n 10 /var/lo/dmseg >> /tmp/boot-messages
+\end{commandshell}
+
+\item Concentrate four files into one
+\begin{commandshell}
+cat file1 file2 file3 file4 > /tmp/four-in-one
+\end{commandshell}
+
+\item Save output and error messages to separate files
+\begin{commandshell}
+find /etc -name passwd > /tmp/output 2> /tmp/error
+\end{commandshell}
+
+\end{itemize}
+
+\section{Edit text files}

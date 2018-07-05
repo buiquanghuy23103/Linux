@@ -1,15 +1,17 @@
 \documentclass[10pt,a4paper]{book}
 \usepackage{huy,code,titlepage}
 \usepackage[margin=2cm]{geometry}
+\setcounter{tocdepth}{1} %shows two levels incl. section
 \begin{document}
 
 \thispagestyle{empty}{%
 	\titleAT{LINUX}
 	\tableofcontents
-	\listoffigures
-	\listoftables\tableofcontents
+	\listoftables
 }
 
-\include{shell}
-\include{help}
+\include{1-CommandLine}
+\include{2-FileManagement}
+\include{3-GettingHelp}
+\include{4-TextFiles}
 \end{document}
