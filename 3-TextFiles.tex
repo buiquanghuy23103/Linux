@@ -23,7 +23,7 @@
 The order of redirection is important. The sequence \verb|> file 2>&1| redirects redirect \verb|stdout| to a file (\verb|>file|), then redirect \verb|stderr| (\verb|2>|) to the same place that \verb|stdout| is directed to (\verb|&1|, 1 is the number of \verb|stdout|). However, the sequence \verb|2>&1 > file| redirects \verb|stderr| (\verb|2>|) to the place of \verb|stdout| (\verb|&1|), meaning the terminal window. It then redirects only the \verb|stdout| to a file.
 
 \begin{itemize}
-\item Standard error can be redirected through a pipe, but the merging operator such as \code{&>} or \code{&>>} cannot be used. The following command is the correct way to redirect both \verb|stdout| and \verb|stderr| through a pipe.
+\item Standard error can be redirected through a pipe, but the merging operator (\verb|&>| or \verb|&>>|) cannot be used. The following command is the correct way to redirect both \verb|stdout| and \verb|stderr| through a pipe.
 \begin{commandshell}
 find /etc -name passwd 2>&1 | less
 \end{commandshell}
@@ -70,4 +70,42 @@ find /etc -name passwd > /tmp/output 2> /tmp/error
 
 \end{itemize}
 
-\section{Edit text files}
+\section{Vim editor}
+
+Vim is a highly configurable and efficient editor for practiced users, including such features as split screen editing, color formatting, and highlighting command syntax. When first opened, Vim starts in \emph{command mode}, used for text manipulation (navigation, cut, paste, delete, etc.). Enter each of other modes with a single character keystrokes:
+
+\begin{itemize}
+\item An \code{i} keystroke enters \emph{insert mode}, where all text typed becomes file content. Press \code{Esc} to return to command mode.
+
+\item A \code{v} keystroke enters \emph{visual mode}, where multiple characters may be selected for text manipulation. Use \code{V} for multi-line selection and \code{Ctrl+v} for block selection. The same keystroke used to enter the visual mode (\code{v}, \code{Ctrl+v}, \code{V}) is used to exit.
+
+\item The \code{:} keystroke begins \emph{extended command mode} for tasks like saving file, exiting Vim editor.
+\end{itemize}
+
+The following workflow presents the minimum keystrokes every Vim user must learn:
+
+\begin{enumerate}
+\item Open a file with \code{vim <filename>}
+\item Use arrow keys to move the cursor
+\item Edit file content in insert mode
+    \begin{itemize}
+    \item Press \code{i} to enter insert mode, then edit the file content
+    \item Press \code{Esc} to return to command mode
+    \end{itemize}
+\item Text manipulation in command mode
+    \begin{itemize}
+    \item Press \code{u} to undo mistaken edits on the current line
+    \item Press \code{x} to delete a selection of text
+    \end{itemize}      
+\item Rearranging existing text
+    \begin{itemize}
+    \item In command mode, press \code{v} to enter visual mode. Use arrow keys to position the cursor to the last character
+    \item Press \code{y} to yank (copy) the selection. Move the cursor to position the insert location. Press \code{p} to paste the selection
+    \end{itemize}        
+\item Save files or exit
+    \begin{itemize}
+    \item Enter \code{:w} to write (save) the file and remain in command mode
+    \item Enter \code{:wq} to write the file and quit Vim
+    \item Enter \code{:q!} to quit Vim but don't save file
+    \end{itemize}        
+\end{enumerate}

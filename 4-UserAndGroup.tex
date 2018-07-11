@@ -1,0 +1,145 @@
+\chapter{Users and Groups}
+
+\section{Introduction}
+
+Every process on the system runs as a particular user. Every file is owed by a particular user. Access to files and directories are restricted by a user. Each user has a name and UID. The system uses \verb|/etc/passwd| file to store information about local users. The format of \verb|/etc/passwd| follows: 
+
+\begin{verbatim}
+username:password:UID:GID:GECOS:/home/dir/:shell
+
+admin:x:1000:1000:admin:/home/admin:/bin/bash
+gdm:x:42:42::/var/lib/gdm:sbin/nologin
+\end{verbatim}
+
+\begin{itemize}
+\item \verb|username| is either the name of a standard user or the name of a daemon
+\item An \verb|x| in the \verb|password| field indicates passwords are stored in the\verb| /etc/shadow| file
+\item \verb|UID| is the unique ID assigned to that user.
+\item \verb|GID| is the user's primary group ID
+\item \verb|GECOS| is arbitrary text indicating user's real name
+\item \verb|/home/dir| is the location of the user's data and configuration files
+\item \verb|shell| is a program that runs as the use logs in
+\end{itemize}
+
+There are two types of user: Standard user and System user. \textbf{Standard user} can log into the system and have an ID starting from 500 or 1000. \textbf{System users} are created by default during the Linux installation and are used by the system for specific roles. These user accounts cannot be used to log into the system. The \textbf{root} user account is created by default; it can be used to log into a system and perform any tasks.\\
+
+Ranges of UID: root = 0, static system processes = 1 -- 200, dynamic system processes = 201 -- 999, regular users = 1000+.\\
+
+The \code{su} command allows a user to switch to another user account. If a name is not specified, the \emph{root} account is implied. The command \code{su <username>} starts non-login shell with the current environment settings, while \code{su - <username>} starts login shell and sets up the shell environment as if this were a clean login as that user.\\
+
+Like users, each group has a name and an ID. Local groups' information is stored in \verb|/etc/group|. There are two types of group: Primary group and Supplementary group. Every one user has exactly one \textbf{primary group}. This group automatically owns every new files or directories that the corresponding user created. It is  created with the same name when a new user is created. \textbf{Supplementary group} membership ensures that particular users share access to files or directories. The users of a supplementary group are listed at the last field of the group entry in \verb|/etc/group| file. 
+
+\section{Superuser}
+
+%System administrator should log in as non-root user and use other mechanism (\verb|sudo|, \verb|su|, \verb|su-|, PolicyKit, etc.) to gain temporary superuser access.
+
+To give standard user accounts the permissions to execute a limited set of commands as the root user, use the \code{sudo} command coupled with the \verb|/etc/sudoers| file. Unlike other tools such as \code{su}, \code{sudo} requires users to enter their own password for authentication, not the password of the account they are trying to access. All commands executed using \code{sudo} are logged to \verb|/var/log/secure| file. In Red Hat Enterprise Linux 7, all members of group \verb|wheel| can use \code{sudo} to run commands as any users, including \verb|root|.\\
+
+The \verb|/etc/sudoers| file can only be edited using the \code{visudo} command. Table \ref{sudoers} describes the sections used to configure the this file:
+
+\tableStart[\caption{Sections in sudoers file}\label{sudoers}]{|l|p{8\xm}|}
+\head{Section} & \head{Description} \w
+\verb|User_Alias| & Specify a set of users who are allowed to execute sudo command.\w
+\verb|Cmnd_Alias| & Specify a set of commands that users can execute using the sudo command.\w
+\verb|Hosts_Alias| & Specify a list of computers on which sudo users can perform commands.\w
+\verb|Runas_Alias| & Specify a username that is used when running commands with sudo. Usually this is just root.\w
+\tableEnd
+
+Each of these aliases in table \ref{sudoers} are defined independently within the \verb|/etc/sudoers| file. To grant users elevated access to the system, these aliases needs to be associated with each other to define exactly what will happen. The syntax is:
+
+\begin{verbatim}
+User_Alias Host_Alias = (user) Cmnd_Alias
+\end{verbatim}
+
+\begin{sexylisting}{Sudoers configuration}
+User_Alias INSTALLERS = jsmith, psimms
+Cmnd_Alias INSTALL = /bin/rpm, /usr/bin/up2date, /user/bin/yum
+Host_Alias FILESERVERS = fs1, fs2, fs3
+
+INSTALLERS FILESERVERS = (root) INSTALL
+%wheel FILESERVERS = (root) INSTALL
+\end{sexylisting}
+
+The 1st command adds the users \verb|jsmith| and \verb|psimms| to the \verb|INSTALLERS| alias. The 2nd command assigns the \verb|rpm|, \verb|up2date|, and \verb|yum| commands to the \verb|INSTALL| alias. The 3rd command adds the three computers \verb|fs1|, \verb|fs2|, and \verb|fs3| to the alias. The 4th entry specifies that all users listed in \verb|INSTALLERS| alias are allowed to run the commands associated with \verb|INSTALL| alias, and this can only be done on the computers listed in \verb|FILESERVERS| alias. \\
+
+We can specify a list of users using group instead of \verb|User_Alias|. For example, the last command specifies all users in group \verb|wheel| are allowed to run the commands in the \verb|INSTALL| alias on the hosts contained in the \verb|FILESERVERS| alias as the root user. \\
+
+After editing \verb|/etc/sudoers| file, reboot the system to apply changes.
+
+\section{User configuration}
+
+Some defaults, such as the range of UID and default password aging rules, are read from the \verb|/etc/login.defs| file. Values in this file are only used when creating new users. Any changes on this file does not affect the existing users.\\
+
+\tableCmdStart
+\tableCmdHead{useradd}
+\verb|<username>| & Create a user with default settings. Note that this command does not set any valid password and the user cannot log in until the password is set.\w
+\verb|--help| & Display \verb|useradd| commands and options.\w
+
+\tableCmdHead{usermod}
+\verb|-c <string>| & Add value to GECOS field.\w
+\verb|-d <home-dir>| & Specify new home directory location (use absolute path)\w
+\verb|-m <dir>| & Move user's home directory, must be used with \verb|-d| option\w
+\verb|-G <group>| & Defines the secondary group membership.\w
+\verb|-a| & Used with \verb|-G| option to append the user to supplementary group without removing the user from other groups\w
+\verb|-s <shell>| & Specify a login shell for user account\w
+\verb|-L <username>| & Lock user account\w
+\verb|-U <username>| & Unlock user account\w
+
+\tableCmdHead{userdel}
+\verb|<username>| & Delete the user from \verb|/etc/passwd| file but leaves the home's directory\w
+\verb|-r <username>| & Delete the user and the user's home directory\w
+\tableCmdEnd
+
+\note When a user is removed using \code{userdel} command without \code{-r} options, the remaining files in that user's home directory are owned by unassigned UID. Because the first free UID is assigned to any newly created user, the old user's UID will be reassigned to the new one, and therefore, the new user owns all files of the old user. This is a serious security issues.
+
+\tableCmdStart
+\tableCmdHead{passwd}
+Without options & Assign or Change the current user's password.\w
+\verb|<username>| & Assign or Change password of a specified account.\w
+\verb|-S <username>| & Display status of the user account. \verb|LK| indicates that the user account is locked; \verb|PS| indicates that the user account has a password.\w
+\verb|-l| & Renames a user account.\w
+\verb|-n <day>| & Sets the minimum number of days a password exists before it can be changed.\w
+\verb|-x <day>| & Sets the number of days before a user must change the password (password expiration time).\w
+\verb|-w <day>| & Sets the number of days before the password expires that the user is warned.
+\verb|-i <day>| sets the number of days following the password expiration that the account will be locked.
+
+\tableCmdHead{id}
+Without options & Display the current user information (UID, GID, etc.)\w
+\verb|<username>|& Display the specified user information (UID, GID, etc.)\w
+\tableCmdEnd
+
+\section{Group configuration}
+
+\tableCmdStart
+\tableCmdHead{groupadd}
+\verb|<groupname>| & Create a group with default settings. A group must exist before a user can be added to the group.\w
+\verb|-g <num>| & Specify GID.\w
+\verb|-r <groupname>| & Create a system group.\w
+\verb|-n <name>| & Change group name.\w
+
+\tableCmdHead{groupdel}
+\verb|<groupname>| & Delete a group. Check all file systems to ensure that no files remain owned by the group.\w
+\tableCmdEnd
+
+
+\section{Useful commands}
+
+\begin{itemize}
+\item Find ``unowned" files and directories
+\begin{commandshell}
+sudo find / -nouser -o -nogroup 2> /dev/null
+\end{commandshell}
+
+\item Creates the khart user account. Then modify account information of user \verb|khart| change comment, assign to new supplementary group \verb|comedian|, change shell to \verb|/bin/tsch|
+\begin{commandshell}
+sudo useradd khart
+sudo usermod -c "Kevin Hart" -Ga comedian -s /bin/tsch khart
+\end{commandshell}
+
+\item Remove all supplementary groups of esmith
+\begin{commandshell}
+sudo usermod -G "" esmith
+\end{commandshell}
+
+\item 
+\end{itemize}

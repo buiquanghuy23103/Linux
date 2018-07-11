@@ -1,105 +1,92 @@
 \chapter{The Shell}
 
 \section{Basic commands and tips}
-\begin{table}[hbtp]
-\centering \caption{Shell shortcuts}
-\begin{tabular}{|l| p{10cm} |}
-\hline
-\head{Shortcuts} & \head{Explanation} \\
-\hline
-Ctrl + Alt + F1 -- 6 & Start or switch to the first (to sixth) session \\ \hline
-Ctrl + Alt + F7 & Switch to GUI session \\ \hline
-Shift + PgUp & Scroll up\\ \hline 
-Shift + PgDown & Scroll down\\ \hline 
-Ctrl + A & Jump to the beginning of the line \\ \hline
-Ctrl + E & Jump to the end of the line \\ \hline
-Ctrl + U & Clear from the cursor to the beginning of the line \\ \hline
-Ctrl + K & Clear from the cursor to the end of the line \\ \hline
-!string & Re-execute a recent command by matching the command name \\ \hline
-!65 & Re-execute a 65th command in the history list \\ \hline
-Ctrl + R & Search the history list of commands for a pattern \\ \hline
-Esc + . & Copy the last argument of the previous command to the current one \\ \hline
-Ctrl + C & Stop the running command \\ \hline
-Ctrl + Z & Suspend the running command \\ \hline
-\end{tabular}
-\end{table}
+
+\tableStart[\caption{Shell shortcuts}] {|l|l|}
+\head{Shortcuts} & \head{Explanation} \w
+\code{Ctrl+Alt+F1-F6} & Start or switch to the first (to sixth) session \w
+Ctrl + Alt + F7 & Switch to GUI session \w
+Shift + PgUp & Scroll up\w 
+Shift + PgDown & Scroll down\w 
+Ctrl + A & Jump to the beginning of the line \w
+Ctrl + E & Jump to the end of the line \w
+Ctrl + U & Clear from the cursor to the beginning of the line \w
+Ctrl + K & Clear from the cursor to the end of the line \w
+!string & Re-execute a recent command by matching the command name \w
+!65 & Re-execute a 65th command in the history list \w
+Ctrl + R & Search the history list of commands for a pattern \w
+Esc + . & Copy the last argument of the previous command to the current one \w
+Ctrl + C & Stop the running command \w
+Ctrl + Z & Suspend the running command \w
+\tableEnd
 
 
-\begin{table}[hbtp]
-\centering\caption{File and Directory commands}
-\begin{tabular}{|l|l| p{9cm} |}
-\hline
-\head{Activity} & \head{Command} & \head{Explain} \\
-\hline
+\tableStart[\caption{Basic Files and Directory commands}] {|l|l| p{9cm} |}
+\head{Activity} & \head{Command} & \head{Explain} \w
 
-Copy a file & \verb|cp file1 file2| & Copy \verb|file1| to a desire location and change name to \verb|file2| \\
+Copy a file & \verb|cp file1 file2| & Copy \verb|file1| to a desire location and change name to \verb|file2| \w
 
-Copy multiple files & \verb|cp file1 file2 file3 dir| & Copy \verb|file1|, \verb|file2|, and \verb|file3| to directory \verb|dir|. Note that the last argument must be a directory. \\
+Copy multiple files & \verb|cp file1 file2 file3 dir| & Copy \verb|file1|, \verb|file2|, and \verb|file3| to directory \verb|dir|. Note that the last argument must be a directory. \w
 
-Move a file & \verb|mv file1 file2| & If \verb|file2| resides in a different directory than \verb|file1|, then \verb|file1| is moved to the new location \\
+Move a file & \verb|mv file1 file2| & If \verb|file2| resides in a different directory than \verb|file1|, then \verb|file1| is moved to the new location \w
 
-Rename a file & \verb|mv file1 file2| & If \verb|file2| and \verb|file1| are in the same directory, then \verb|file1| is renamed as \verb|file2| \\
+Rename a file & \verb|mv file1 file2| & If \verb|file2| and \verb|file1| are in the same directory, then \verb|file1| is renamed as \verb|file2| \w
 
-Move multiple files & \verb|mv file1 file2 file3 dir| & Move \verb|file1|, \verb|file2|, and \verb|file3| to directory \verb|dir|\\
+Move multiple files & \verb|mv file1 file2 file3 dir| & Move \verb|file1|, \verb|file2|, and \verb|file3| to directory \verb|dir|\w
 
-Create directory & \verb|mkdir dir| & Create directory \verb|dir| under the current directory\\
+Create directory & \verb|mkdir dir| & Create directory \verb|dir| under the current directory\w
 
-Create directory path & \verb|mkdir -p ~/dir1/dir2/dir3| & Create \verb|dir1|,\verb|dir2|, and \verb|dir3| to match the specified directory structure \verb|~/dir1/dir2/dir3| \\
+Create directory path & \verb|mkdir -p ~/dir1/dir2/dir3| & Create \verb|dir1|,\verb|dir2|, and \verb|dir3| to match the specified directory structure \verb|~/dir1/dir2/dir3| \w
 
-Copy directories & \verb|cp -r dir1 dir2 dir3 dir4| & Recursively copy \verb|dir1|,\verb|dir2|, and \verb|dir3| to \verb|dir4| \\
+Copy directories & \verb|cp -r dir1 dir2 dir3 dir4| & Recursively copy \verb|dir1|,\verb|dir2|, and \verb|dir3| to \verb|dir4| \w
 
-Move directories & \verb|mv dir1 dir2 dir3 dir4| & Move \verb|dir1|,\verb|dir2|, and \verb|dir3| to \verb|dir4| \\
+Move directories & \verb|mv dir1 dir2 dir3 dir4| & Move \verb|dir1|,\verb|dir2|, and \verb|dir3| to \verb|dir4| \w
 
-Remove directories & \verb|rm -rf dir1 dir2 dir3| & Remove (without questioning) \verb|dir1|,\verb|dir2|, and \verb|dir3| \\
-\bottomrule
-\end{tabular}
-\end{table}
+Remove directories & \verb|rm -rf dir1 dir2 dir3| & Remove (without questioning) \verb|dir1|,\verb|dir2|, and \verb|dir3| \w
+\tableEnd
 
-\begin{table}[hbtp]
-\centering\caption{Common meta-characters and pattern classes.}
-\begin{tabular}{|l|l|}
-\hline
-\head{Pattern}&\head{Matches}\\
-\hline
-
-\verb|*| & Any string of zero or more characters\\ \hline
-\verb|?| & Any single character\\ \hline
-\verb|~| & The current user's home directory\\ \hline
-\verb|~kevin| & The current Kevin's home directory\\ \hline
-\verb|~+| & The current working directory\\ \hline
-\verb|~-| & The previous working directory\\ \hline
-\verb|[abc...]| & Any one character in the enclosed class\\ \hline
-\verb|[!abc...]| & Any one character \emph{not} in the enclosed class\\ \hline
-\verb|[^abc...]| & Any one character \emph{not} in the enclosed class\\ \hline
-\verb|[[:alpha:]]| & Any alphabetic character\\ \hline 
-\verb|[[:alnum:]]| & Any alphabetic character or digit\\ \hline 
-\verb|[[:lower:]]| & Any lower-case character\\ \hline 
-\verb|[[:upper:]]| & Any upper-case character\\ \hline
-\verb|[[:punct:]]| & Printable character (not a space or alphanumeric)\\ \hline  
-\verb|[[:digit:]]| & Any digit, 0 -- 9\\ \hline 
-\verb|[[:space:]]| & Any one whitespace character (space, tab, newline, carriage return, form feeds)\\ \hline
-\verb|{a,b,2,3}| & Any characters in the brace \\ \hline  
-\verb|{1..8}| & Any single digit from 1 to 8\\
-\hline 
-\verb|{a..d}| & Any single characters from a to d (a, b, c, d) \\ \hline
-\end{tabular}
-\end{table}
+\tableStart[\caption{Common meta-characters and pattern classes}] {|l|l|}
+\head{Characters}&\head{Explanation}\w
+\verb|*| & Any string of zero or more characters\w
+\verb|?| & Any single character\w
+\verb|~| & The current user's home directory\w
+\verb|~kevin| & The current Kevin's home directory\w
+\verb|~+| & The current working directory\w
+\verb|~-| & The previous working directory\w
+\verb|[abc...]| & Any one character in the enclosed class\w
+\verb|[!abc...]| & Any one character \emph{not} in the enclosed class\w
+\verb|[^abc...]| & Any one character \emph{not} in the enclosed class\w
+\verb|[[:alpha:]]| & Any alphabetic character\w
+\verb|[[:alnum:]]| & Any alphabetic character or digit\w
+\verb|[[:lower:]]| & Any lower-case character\w 
+\verb|[[:upper:]]| & Any upper-case character\w
+\verb|[[:punct:]]| & Printable character (not a space or alphanumeric)\w  
+\verb|[[:digit:]]| & Any digit, 0 -- 9\w 
+\verb|[[:space:]]| & Any one whitespace character (space, tab, newline, carriage return, form feeds)\w
+\verb|{a,b,2,3}| & Any characters in the brace \w  
+\verb|{1..8}| & Any single digit from 1 to 8\w
+\verb|{a..d}| & Any single characters from a to d (a, b, c, d) \w
+\tableEnd
 
 \paragraph{Command substitution:} allows output of a command to replace itself. It occurs when a command is enclosed with a dollar sign and a pair of parentheses \verb|$(command)|, or backticks \verb|`command`|. The form with backticks cannot be nested inside another pair of backticks. In contrast, \verb|$(command)| can nest multiple expansions inside each other.
 
 \begin{verbatim}
-$ echo Today is `date +%A`
-$ echo Today is $(date +%A)
-$ cat $(fgrep -l ens32 /var/*)
+
 \end{verbatim}
+
+\begin{commandshell}
+echo Today is `date`
+cat $(fgrep -l ens32 /var/*)
+echo Today is $(date)
+\end{commandshell}
 
 \paragraph{Protecting argument from expansion:} To ignore meta-character special meanings, we use \emph{escaping} and \emph{quoting}. The backslash \verb|\| is an escape character that protects the single following character from special interpretation. The single quotes \verb|' '| and double quotes \verb|"  "| are used to enclose a string. The double quotes suppress shell expansions and meta-characters but still allows command and variable substitutions. The single quotes interpret all text literally, it suppress shell expansions and meta-characters as well as command and variable substitutions. 
 
 \begin{verbatim}
-$ echo "**hostname is $(host)**"
+kevin$> echo "**hostname is $(host)**"
 **hostname is rtracy**
 
-$ echo '**hostname is $(host)**'
+kevin$> echo '**hostname is $(host)**'
 **hostname is $(host)**
 \end{verbatim}
 
@@ -121,25 +108,13 @@ Login shells execute only one of the following configuration files in order (mea
 \item \verb|~/.profile|
 \end{enumerate}
 
-\begin{table}[hbtp]
-\centering
-\begin{tabular}{|l|l| p{10cm} |}
-\hline 
-\head{File} & \head{Type} & \head{Explanation} \\
-\hline 
-\verb|/etc/profile.d/| & login & Configurations in this directory are applied for all users. Do not modify the system's files, instead create your own file (for example: \verb|MyConf.sh|) and add custom configurations  to it.\\
-\hline 
-\verb|~/.bash_profile| & login & Contains shell preferences for individual user. \\
-\hline 
-\verb|~/.profile| & login & Contains environment variables for individual users. \\
-\hline 
-\verb|~./bash_login| & login & Store commands executed when a user logs in. \\
-\hline 
-\verb|~./bash_logout| & login & Store commands executed when a user logs out. \\
-\hline 
-\verb|/etc/bashrc| & non-login & Contain shell preferences for all users. \\
-\hline 
-\verb|~/.bashrc| & non-login & Pass variables between shells. \\
-\hline 
-\end{tabular}
-\end{table}
+\tableStart[\caption{Shell configuration files}] {|l|l| p{10cm} |}
+\head{File} & \head{Type} & \head{Explanation} \w
+\verb|/etc/profile.d/| & login & Configurations in this directory are applied for all users. Do not modify the system's files, instead create your own file (for example: \verb|MyConf.sh|) and add custom configurations  to it.\w
+\verb|~/.bash_profile| & login & Contains shell preferences for individual user. \w
+\verb|~/.profile| & login & Contains environment variables for individual users. \w
+\verb|~./bash_login| & login & Store commands executed when a user logs in. \w
+\verb|~./bash_logout| & login & Store commands executed when a user logs out. \w
+\verb|/etc/bashrc| & non-login & Contain shell preferences for all users. \w
+\verb|~/.bashrc| & non-login & Pass variables between shells. \w
+\tableEnd
