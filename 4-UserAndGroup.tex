@@ -2,7 +2,21 @@
 
 \section{Introduction}
 
-Every process on the system runs as a particular user. Every file is owed by a particular user. Access to files and directories are restricted by a user. Each user has a name and UID. The system uses \verb|/etc/passwd| file to store information about local users. The format of \verb|/etc/passwd| follows: 
+Every process on the system runs as a particular user. Every file is owed by a particular user. Access to files and directories are restricted by a user. Each user has a name and UID. 
+
+There are two types of user: Standard user and System user. \textbf{Standard user} can log into the system and have an ID starting from 500 or 1000. \textbf{System users} are created by default during the Linux installation and are used by the system for specific roles. These user accounts cannot be used to log into the system. The \textbf{root} user account is created by default; it can be used to log into a system and perform any tasks.\\
+
+Ranges of UID: root = 0, static system processes = 1 -- 200, dynamic system processes = 201 -- 999, regular users = 1000+.\\
+
+The \code{su} command allows a user to switch to another user account. If a name is not specified, the \emph{root} account is implied. The command \code{su <username>} starts non-login shell with the current environment settings, while \code{su - <username>} starts login shell and sets up the shell environment as if this were a clean login as that user.\\
+
+
+
+Like users, each group has a name and an ID. There are two types of group: Primary group and Supplementary group. Every one user has exactly one \textbf{primary group}. This group automatically owns every new files or directories that the corresponding user created. It is  created with the same name when a new user is created. \textbf{Supplementary group} membership ensures that particular users share access to files or directories. 
+
+\section{Configuration files}
+
+The system uses \verb|/etc/passwd| file to store information about local users. The format of \verb|/etc/passwd| follows: 
 
 \begin{verbatim}
 username:password:UID:GID:GECOS:/home/dir/:shell
@@ -21,13 +35,40 @@ gdm:x:42:42::/var/lib/gdm:sbin/nologin
 \item \verb|shell| is a program that runs as the use logs in
 \end{itemize}
 
-There are two types of user: Standard user and System user. \textbf{Standard user} can log into the system and have an ID starting from 500 or 1000. \textbf{System users} are created by default during the Linux installation and are used by the system for specific roles. These user accounts cannot be used to log into the system. The \textbf{root} user account is created by default; it can be used to log into a system and perform any tasks.\\
+The \verb|/etc/skel| directory contains a set of configuration file templates that are copied into a new user's home directory when it is created. The \verb|/etc/default/useradd| file contains default values used by the useradd utility when creating a user account.\\
 
-Ranges of UID: root = 0, static system processes = 1 -- 200, dynamic system processes = 201 -- 999, regular users = 1000+.\\
+The \verb|/etc/shadow| file holds passwords and password expiration information for user accounts. Like the \verb|/etc/passwd| file, each entry corresponds to a user account and each entry contains multiple fields, with each field separated by a colon. The following line is a sample entry in the /etc/shadow file:
 
-The \code{su} command allows a user to switch to another user account. If a name is not specified, the \emph{root} account is implied. The command \code{su <username>} starts non-login shell with the current environment settings, while \code{su - <username>} starts login shell and sets up the shell environment as if this were a clean login as that user.\\
+\begin{verbatim}
+pclark:$ab7Y56gu9bs:12567:0:99999:7:::
+\end{verbatim}
 
-Like users, each group has a name and an ID. Local groups' information is stored in \verb|/etc/group|. There are two types of group: Primary group and Supplementary group. Every one user has exactly one \textbf{primary group}. This group automatically owns every new files or directories that the corresponding user created. It is  created with the same name when a new user is created. \textbf{Supplementary group} membership ensures that particular users share access to files or directories. The users of a supplementary group are listed at the last field of the group entry in \verb|/etc/group| file. 
+The fields within this line are as follows:
+
+\begin{enumerate}
+\item User account name.
+\item Password.	\verb|$| preceding the password identifies the password as an encrypted entry. \verb|!| or \verb|!!| indicates that the account is locked and cannot be used to log in. \verb|*| indicates a system account entry and cannot be used to log in.
+\item Last change. The date of the most recent password change, measured in the number of days since 1 January 1970.
+\item Minimum password age. The minimum number of days the user must wait before changing the password.
+\item Maximum password age. The maximum number of days between password changes.
+\item Password change warning. The number of days a user is warned before the password must be changed.
+\item Grace logins. The number of days the user can log in without changing the password.
+\item Disable time. The number of days since 1 January 1970, after which the account will be disabled.
+\end{enumerate}
+
+
+
+Local groups' information is stored in \verb|/etc/group|. The users of a supplementary group are listed at the last field of the group entry in this file. The following line is a sample entry in the /etc/group file:
+
+\begin{verbatim}
+sales:x:510:pclark,mmckay,hsamson
+\end{verbatim}
+
+The /etc/gshadow file holds passwords for groups. The following line is a sample entry in the /etc/gshadow file:
+
+\begin{verbatim}
+sales:!:pclark:pclark,mmckay,hsamson
+\end{verbatim}
 
 \section{Superuser}
 
@@ -98,15 +139,22 @@ Without options & Assign or Change the current user's password.\w
 \verb|<username>| & Assign or Change password of a specified account.\w
 \verb|-S <username>| & Display status of the user account. \verb|LK| indicates that the user account is locked; \verb|PS| indicates that the user account has a password.\w
 \verb|-l| & Renames a user account.\w
-\verb|-n <day>| & Sets the minimum number of days a password exists before it can be changed.\w
-\verb|-x <day>| & Sets the number of days before a user must change the password (password expiration time).\w
-\verb|-w <day>| & Sets the number of days before the password expires that the user is warned.
-\verb|-i <day>| sets the number of days following the password expiration that the account will be locked.
 
 \tableCmdHead{id}
 Without options & Display the current user information (UID, GID, etc.)\w
 \verb|<username>|& Display the specified user information (UID, GID, etc.)\w
 \tableCmdEnd
+
+\tableCmdStart
+\tableCmdHead{chage}
+\verb|-l <user>| & Display user's aging information.\w
+\verb|-E| & Set expiration date\w
+\verb|-d| & set the date when the password was last changed\w
+\verb|-n <day>| & Sets the minimum number of days a password exists before it can be changed.\w
+\verb|-x <day>| & Sets the number of days before a user must change the password (password expiration time).\w
+\verb|-W <day>| & Sets the number of days before the password expires that the user is warned.
+\verb|-I <day>| sets the number of days following the password expiration that the account will be locked.
+
 
 \section{Group configuration}
 
@@ -115,10 +163,14 @@ Without options & Display the current user information (UID, GID, etc.)\w
 \verb|<groupname>| & Create a group with default settings. A group must exist before a user can be added to the group.\w
 \verb|-g <num>| & Specify GID.\w
 \verb|-r <groupname>| & Create a system group.\w
-\verb|-n <name>| & Change group name.\w
+\verb|-n| & Change group name. For example, \verb|groupmod -n sales2 sale| rename group \verb|sale| to \verb|sales2|. \w
 
-\tableCmdHead{groupdel}
-\verb|<groupname>| & Delete a group. Check all file systems to ensure that no files remain owned by the group.\w
+\tableCmdHead{Other group commands}
+\verb|groupdel <group>| & Delete a group. Check all file systems to ensure that no files remain owned by the group.\w
+\verb|gpasswd| & Assign or change group password.\w
+\verb|gpasswd -d <user> <group>| & Remove a user from a group.\w
+\verb|newgrp| & Log in to a group with password.\w
+\verb|groups <user>| & Display the primary and secondary group membership for the specified user account.\w
 \tableCmdEnd
 
 
@@ -141,5 +193,15 @@ sudo usermod -c "Kevin Hart" -Ga comedian -s /bin/tsch khart
 sudo usermod -G "" esmith
 \end{commandshell}
 
-\item 
+\item Force user \verb|esmith| to change password on next login
+\begin{commandshell}
+chage -d 0 esmith
+\end{commandshell}
+
+\item Set the date on which the user account \verb|ravi| will no longer be accessible
+\begin{commandshell}
+chage -E 2018-02-16 ravi
+\end{commandshell}
+
+
 \end{itemize}

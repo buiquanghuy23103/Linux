@@ -1,0 +1,89 @@
+\chapter{Permissions and Ownerships}
+
+\section{Permission}
+
+\subsection{Introduction}
+
+Permissions are identified with either the letter abbreviation (\verb|r|, \verb|w|, \verb|x|, etc.), or the octal value that corresponds to the permission. In letter abbreviation: if a given permission has not been assigned, a dash (-) takes its place in the mode. 
+
+\begin{verbatim}
+[user1@host1 ~]$ ls -l
+-rw-rw-r--. 1 user1 user1 0 Feb 8 17:36 test.txt
+[user1@host1 ~]$ ls -ld /home
+drw-rw-r--. 1 user1 user1 0 Feb 8 17:36 /home
+\end{verbatim}
+
+\tableStart[Effects of permissions on files and directories] {|l|p{3\xm}|p{7\xm}| }
+\head{Permission} & \head{Effect on files} & \head{Effect on directories}\w
+\verb|r| (read) & Contents of the file can be read & Content of the directory (list of file names) can be shown\w
+\verb|w| (write) & Contents of the file can be changed & Any file in the directory can be created or deleted\w
+\verb|x| (execute) & Files can be executed as commands & Contents of the directory can be accessed\w
+\tableEnd
+
+A user normally has to have both \verb|read| and \verb|execute| on a read-only directory, so that the content of the directory can be listed. If a user only has \verb|read| permission on a directory, then except for the list of all files, no other information such as permissions, time stamps, can be accessed. If users only have \verb|execute| permission on a directory, they cannot see the list of all file names in the directory, but they can access any file in the directory as long as they know the file names.\\
+
+The \verb|ls -l| command will expand the file listing including file's permissions and ownerships. The \verb|ls -ld| command does the same for directories.
+
+\subsection{Configuration}
+
+The command \verb|chmod| can change permissions of files and directories. The permission instruction can be issued in either symbolic form or numeric form.\\
+
+\begin{verbatim}
+chmod WhoWhatWhich file|directory
+\end{verbatim}
+
+The symbolic method of change permissions uses letters to represent different groups of permissions: \verb|u| for user, \verb|g| for group, \verb|other| for other, and \verb|a| for all. In order to change permission, use three symbols: \verb|+| to add permissions, \verb|-| to remove permissions, and \verb|=| to replace the entire set of permissions. For example, the following command removes write and read permission from group and other on \verb|file.txt|
+
+\begin{commandshell}
+chmod go-rw file.txt
+\end{commandshell}
+
+The  following command execute permission to everyone on \verb|file.sh|
+
+\begin{commandshell}
+chmod a+x file.sh
+\end{commandshell}
+
+As for numeric method of changing permissions, each digit \verb|#| represents an access level: user, group, and other. Each digit \verb|#| is the sum of \verb|r|=4, \verb|w|=2, and \verb|x|=1. Examine the permission \verb|-rwxr-x---|. For the user, \verb|rwx| is calculated as 4+2+1=7. For the group \verb|r-x| is calculated as 4+0+1=5, for other is calculated as 0+0+0=0. Putting these three together, the numeric representation is 750.
+
+\begin{verbatim}
+chmod ### file|directory
+\end{verbatim}
+
+The following command set permissions for \verb|sampledir| file:
+
+\begin{commandshell}
+chmod 750 sampledir
+\end{commandshell}
+
+\section{Ownership}
+
+\subsection{Basic configuration}
+
+When a file is created, its owner is the user who created it, and the owning group is the user's current group. The \verb|chown| command can change these values to something else. The syntax of this command is shown as below:
+
+\begin{verbatim}
+chown <option> <ownership> <file>
+\end{verbatim}
+
+Specifically, there are five ways to format \verb|<ownership|:
+
+\begin{itemize}
+\item \verb|user.group| or \verb|user:group| -- The user and group to own the file, separated by a colon (or dot), with no spaces in between.
+\item \verb|user| -- The name of the user to own the file. In this form, the colon (":") and the group is omitted. The owning group is not altered.
+\item \verb|.group| or \verb|:group| -- The group to own the file. In this form, user is omitted, and the group must be preceded by a colon.
+\item \verb|user:| or \verb|user.| -- If group is omitted, but a colon follows user, the owner is changed to user, and the owning group is changed to the login group of user.
+\end{itemize}
+
+For example, the following command would grant ownership of \verb|file.txt| to user \verb|visitor| and group \verb|guests|.
+
+\begin{commandshell}
+chown visitor:guests file.txt
+\end{commandshell}
+
+\verb|chown| can be used with the \verb|-R| option to recursively change the ownership of the entire directory tree. The following command would grant ownership of \verb|foodir| along with all files and subdirectories within it to user \verb|student|.
+
+\begin{commandshell}
+chown -R student ~/foodir/
+\end{commandshell}
+
