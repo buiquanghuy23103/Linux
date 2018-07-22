@@ -24,6 +24,48 @@ A user normally has to have both \verb|read| and \verb|execute| on a read-only d
 
 The \verb|ls -l| command will expand the file listing including file's permissions and ownerships. The \verb|ls -ld| command does the same for directories.
 
+\subsection{Special ownership}
+
+The \textbf{setuid} (or \textbf{setgid}) permission on an executable file means that the command will run as the owner (user, group) of the file, \emph{not} as the user that run the command. \\
+
+In the output of the command \code{ls -l}, the \textbf{setuid} permission is represented by a lowercase \code{s} where you normally expect the \code{x} to be (\emph{owner} execute permission). If the owner does not have execute permissions, this will be replaced by an uppercase \code{S}.
+
+\begin{verbatim}
+[server1@host1 ~]$ ls -l /usr/bin/passwd
+-rwsr-xr-x root root 35504 Jul 16 2010 /usr/bin/passwd
+
+[server1@host1 ~]$ ls -l ~/install.sh
+-rwSrw-r–x 1 admin admin 0 Jul 24 22:40 install.sh
+\end{verbatim}
+
+In the output of the command \code{ls -l}, the \textbf{setgid} permission is represented by a lowercase \code{s} where you normally expect the \code{x} to be (\emph{group} execute permission). If the owner does not have execute permissions, this will be replaced by an uppercase \code{S}.
+
+\begin{verbatim}
+[server1@host1 ~]$ ls -l /usr/bin/passwd
+-rwsr-xr-x root root 35504 Jul 16 2010 /usr/bin/passwd
+
+[server1@host1 ~]$ ls -l ~/install.sh
+-rwSrw-r–x 1 admin admin 0 Jul 24 22:40 install.sh
+\end{verbatim}
+
+The sticky bit for a directory specify a special restriction of deletion of files: Only the owner of the files are allowed to delete them.  In the output of the command \code{ls -l}, the setuid permission is represented by a lowercase \code{t} where you normally expect the \code{x} to be (\emph{other} execute permission).. If the owner does not have execute permissions, this will be replaced by an uppercase \code{T}.
+
+
+\begin{verbatim}
+[server1@host1 ~]$ ls -ld /tmp
+-rwxr-xrwt root root 35504 Jul 16 2010 /tmp
+
+[server1@host1 ~]$ ls -ld ~/Desktop
+-rwxrw-r–T 1 admin admin 0 Jul 24 22:40 Huy.txt
+\end{verbatim}
+
+Setting special permissions:
+
+\begin{itemize}
+\item Symbolically: setuid = \verb|u+s|, setgid = \verb|g+s|, and sticky = \verb|o+t|
+\item Numerically: setuid = 4, setgid = 2, sticky = 1
+\end{itemize}
+
 \subsection{Configuration}
 
 The command \verb|chmod| can change permissions of files and directories. The permission instruction can be issued in either symbolic form or numeric form.\\
@@ -32,17 +74,26 @@ The command \verb|chmod| can change permissions of files and directories. The pe
 chmod WhoWhatWhich file|directory
 \end{verbatim}
 
-The symbolic method of change permissions uses letters to represent different groups of permissions: \verb|u| for user, \verb|g| for group, \verb|other| for other, and \verb|a| for all. In order to change permission, use three symbols: \verb|+| to add permissions, \verb|-| to remove permissions, and \verb|=| to replace the entire set of permissions. For example, the following command removes write and read permission from group and other on \verb|file.txt|
+The symbolic method of change permissions uses letters to represent different groups of permissions: \verb|u| for user, \verb|g| for group, \verb|other| for other, and \verb|a| for all. In order to change permission, use three symbols: \verb|+| to add permissions, \verb|-| to remove permissions, and \verb|=| to replace the entire set of permissions. 
+
+\begin{itemize}
+\item Removes write and read permission from group and other on \verb|file.txt|
 
 \begin{commandshell}
 chmod go-rw file.txt
 \end{commandshell}
 
-The  following command execute permission to everyone on \verb|file.sh|
+\item Execute permission to everyone on \verb|file.sh|
 
 \begin{commandshell}
 chmod a+x file.sh
 \end{commandshell}
+
+\item Add the setgid to the directory \verb|~/texmf|
+\begin{commandshell}
+chmod g+s ~/texmf
+\end{commandshell}
+\end{itemize}
 
 As for numeric method of changing permissions, each digit \verb|#| represents an access level: user, group, and other. Each digit \verb|#| is the sum of \verb|r|=4, \verb|w|=2, and \verb|x|=1. Examine the permission \verb|-rwxr-x---|. For the user, \verb|rwx| is calculated as 4+2+1=7. For the group \verb|r-x| is calculated as 4+0+1=5, for other is calculated as 0+0+0=0. Putting these three together, the numeric representation is 750.
 
@@ -50,11 +101,18 @@ As for numeric method of changing permissions, each digit \verb|#| represents an
 chmod ### file|directory
 \end{verbatim}
 
-The following command set permissions for \verb|sampledir| file:
+\begin{itemize}
+\item Set permissions for \verb|sampledir| file:
 
 \begin{commandshell}
 chmod 750 sampledir
 \end{commandshell}
+
+\item Set setgid bit (\verb|2|), and read/write/execute permission (\verb|770|) to the directory \verb|/texmf|
+\begin{commandshell}
+chmod 2770 ~/texmf
+\end{commandshell}
+\end{itemize}
 
 \section{Ownership}
 
@@ -66,13 +124,13 @@ When a file is created, its owner is the user who created it, and the owning gro
 chown <option> <ownership> <file>
 \end{verbatim}
 
-Specifically, there are five ways to format \verb|<ownership|:
+Specifically, there are five ways to format \verb|<ownership>|:
 
 \begin{itemize}
 \item \verb|user.group| or \verb|user:group| -- The user and group to own the file, separated by a colon (or dot), with no spaces in between.
-\item \verb|user| -- The name of the user to own the file. In this form, the colon (":") and the group is omitted. The owning group is not altered.
-\item \verb|.group| or \verb|:group| -- The group to own the file. In this form, user is omitted, and the group must be preceded by a colon.
-\item \verb|user:| or \verb|user.| -- If group is omitted, but a colon follows user, the owner is changed to user, and the owning group is changed to the login group of user.
+\item \verb|user| -- The name of the user to own the file. In this form, the colon \code{:} and the group is omitted. The owning group is not altered.
+\item \verb|.group| or \verb|:group| -- The group to own the file. In this form, user is omitted, and the group must be preceded by a colon (or dot).
+\item \verb|user:| or \verb|user.| -- If group is omitted, but a colon (or dot) follows user, the owner is changed to user, and the owning group is changed to the login group of user.
 \end{itemize}
 
 For example, the following command would grant ownership of \verb|file.txt| to user \verb|visitor| and group \verb|guests|.

@@ -1,17 +1,18 @@
 \chapter{The Shell}
 
-\section{Basic commands and tips}
+\section{Basic commands}
 
 \tableStart[\caption{Shell shortcuts}] {|l|l|}
 \head{Shortcuts} & \head{Explanation} \w
-\code{Ctrl+Alt+F1-F6} & Start or switch to the first (to sixth) session \w
+Ctrl+Alt+F1-F6 & Start or switch to the first (to sixth) session \w
 Ctrl + Alt + F7 & Switch to GUI session \w
 Shift + PgUp & Scroll up\w 
 Shift + PgDown & Scroll down\w 
 Ctrl + A & Jump to the beginning of the line \w
 Ctrl + E & Jump to the end of the line \w
-Ctrl + U & Clear from the cursor to the beginning of the line \w
-Ctrl + K & Clear from the cursor to the end of the line \w
+Ctrl + U & Cut from the cursor to the beginning of the line \w
+Ctrl + K & Cut from the cursor to the end of the line \w
+Ctrl + Y & Paste the text that is cut by Ctrl + K and Ctrl + U\w
 !string & Re-execute a recent command by matching the command name \w
 !65 & Re-execute a 65th command in the history list \w
 Ctrl + R & Search the history list of commands for a pattern \w
@@ -89,6 +90,12 @@ kevin$> echo "**hostname is $(host)**"
 kevin$> echo '**hostname is $(host)**'
 **hostname is $(host)**
 \end{verbatim}
+
+\section{Command tricks}
+
+When you run a command and then realize that you have to use \code{sudo} for it, you probably press Up key and then go to the beginning of the line to add \code{sudo}. You can do this faster by typing \code{sudo !!}. This command reruns the previous command with temporary root privilege.\\
+
+
 
 \section{Configuration files}
 

@@ -10,8 +10,6 @@ Ranges of UID: root = 0, static system processes = 1 -- 200, dynamic system proc
 
 The \code{su} command allows a user to switch to another user account. If a name is not specified, the \emph{root} account is implied. The command \code{su <username>} starts non-login shell with the current environment settings, while \code{su - <username>} starts login shell and sets up the shell environment as if this were a clean login as that user.\\
 
-
-
 Like users, each group has a name and an ID. There are two types of group: Primary group and Supplementary group. Every one user has exactly one \textbf{primary group}. This group automatically owns every new files or directories that the corresponding user created. It is  created with the same name when a new user is created. \textbf{Supplementary group} membership ensures that particular users share access to files or directories. 
 
 \section{Configuration files}
@@ -154,7 +152,7 @@ Without options & Display the current user information (UID, GID, etc.)\w
 \verb|-x <day>| & Sets the number of days before a user must change the password (password expiration time).\w
 \verb|-W <day>| & Sets the number of days before the password expires that the user is warned.
 \verb|-I <day>| sets the number of days following the password expiration that the account will be locked.
-
+\tableCmdEnd
 
 \section{Group configuration}
 
